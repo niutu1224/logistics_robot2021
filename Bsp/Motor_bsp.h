@@ -1,10 +1,10 @@
 /*
  * @Author: niutu
  * @Date: 2021-01-25 16:45:36
- * @LastEditTime: 2021-03-30 14:11:07
+ * @LastEditTime: 2023-03-25 20:11:37
  * @LastEditors: NiuTu
  * @Description: In User Settings Edit
- * @FilePath: \MDK-ARMd:\project\logistics_robot_v1\Bsp\Motor_bsp.h
+ * @FilePath: \MDK-ARMd:\project\logistics_robot_end\Bsp\Motor_bsp.h
  */
 
 
@@ -64,43 +64,38 @@ typedef struct
 } 	MoveDebugTypedef;
 
 //参数
-extern MortorTypedef Mortor1,Mortor2,Mortor3,Mortor4;//电机pid
+extern MortorTypedef Mortor1,Mortor2,Mortor3,Mortor4;//电机控制数据
 extern MoveDebugTypedef Speed_Debug;//调试用参数
 
 //声明
 void PWM_Init(void);//pwm初始化
 void PWM_Write(void);//写pwm
-//电机驱动
-void pwm_Driver(int16_t v, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,uint8_t channel);
+void pwm_Driver(int16_t v, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,uint8_t channel);//电机驱动
+
 
 /*********************PID**********************/
 extern uint8_t PID_Mode;//pid模式选择
-//结构体
+//pid参数结构体
 typedef struct
 {
-	int16_t Now_P_Val;//当前位置式速度
-	int16_t EX_P_Val;//目标位置式速度
-	int16_t Now_I_Val;//当前增量式速度
-	int16_t EX_I_Val;//目标增量式速度
-	int16_t Incr_Val;//增量速度
-	int16_t Output_Val;//输出速度
-
 	int16_t Output_Max;//需要初始化
 	int16_t Output_Min;
 
-	int16_t Error_P_Now;//当前偏差（位置）
-	int16_t Error_P_Integral;//累积偏差（位置）
-	int16_t Error_P_Last;//上轮偏差（位置）
-	int16_t Error_I_Now;//当前偏差（增量）
-	int16_t Error_I_Last;//上轮偏差（增量）
-	int16_t Error_I_Before; //上上轮偏差（增量）
+	int16_t Now_Val;//当前速度
+	int16_t EX_Val;//目标速度
+
+	int16_t Incr_Val;//速度增量
+	int16_t Output_Val;//输出速度
+
+	int16_t Error_Now;//当前偏差
+	int16_t Error_Last;//上轮偏差
+	int16_t Error_Before; //上上轮偏差
+
 	int16_t Dead_zone;//死区
-	int16_t Kp_P;
-	int16_t Ki_P;
-	int16_t Kd_P;
-	float Kp_I;
-	float Ki_I;
-	float Kd_I;
+
+	float Kp;
+	float Ki;
+	float Kd;
 	
 }	Incremental_PID_TypeDef;
 

@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2023 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -28,7 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "Bsp.h"//板级支持包头文件
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,13 +105,60 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  Bsp_Init();//外设初始化
 
+  HAL_Delay(500);
+  	
+	Beep(BzzBe);
+   #if (Work_Debug_flag == 2)//工作模式
+   {
+	   Task_Flag = 0;
+   }
+   #endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	if(run_flag)
+    {
+    #if (Work_Debug_flag == 1)//工作模式
+    {
+      Working();
+      Task_mode(task_mode);
+    }
+    #elif (Work_Debug_flag == 2)//调试模式
+    {
+      if(Task_Flag)//忙碌跳出
+      {
+        HAL_Delay(300);
+        Beep(Be);
+      }
+      else
+      {
+        Task_mode(Debug_mode);
+      }
+    }
+    #endif
+	}
+	else
+	{
+		Task_stop();
+	}
+
+	if(Rack_task_1[0] == 0 && Rack_task_2[0] == 0)//接收扫码数据
+	  Usart_rx_MG65();
+	else
+	{
+		if(Number_display_flag == 0x00)
+		{
+			Number_display();
+		}
+	}
+
+  Data_display();
+   // HAL_Delay(5);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

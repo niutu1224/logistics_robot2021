@@ -1,10 +1,10 @@
 /*
  * @Author: niutu
  * @Date: 2021-01-25 16:45:36
- * @LastEditTime: 2021-05-06 00:08:51
+ * @LastEditTime: 2023-03-25 20:29:37
  * @LastEditors: NiuTu
  * @Description: In User Settings Edit
- * @FilePath: \MDK-ARMd:\project\logistics_robot_v1\Bsp\Motor_bsp.c
+ * @FilePath: \MDK-ARMd:\project\logistics_robot_end\Bsp\Motor_bsp.c
  */
 /*
 引脚定义
@@ -72,19 +72,15 @@ void MovePID_Control(void)
 	Speed_Collect();
 	#if (Speed_Debug_Flag == 1)//pid速度模式
 		//目标速度赋予结构体
-		Mortor1_IncrementalPID.EX_I_Val = Mortor1.Speed_Ideal;
-		Mortor2_IncrementalPID.EX_I_Val = Mortor2.Speed_Ideal;
-		Mortor3_IncrementalPID.EX_I_Val = -Mortor3.Speed_Ideal;
-		Mortor4_IncrementalPID.EX_I_Val = -Mortor4.Speed_Ideal;
+		Mortor1_IncrementalPID.EX_Val = Mortor1.Speed_Ideal;
+		Mortor2_IncrementalPID.EX_Val = Mortor2.Speed_Ideal;
+		Mortor3_IncrementalPID.EX_Val = -Mortor3.Speed_Ideal;
+		Mortor4_IncrementalPID.EX_Val = -Mortor4.Speed_Ideal;
 		//当前速度赋予结构体
-		Mortor1_IncrementalPID.Now_P_Val = Encoder_Speed.encoder1;
-		Mortor2_IncrementalPID.Now_P_Val = Encoder_Speed.encoder2;
-		Mortor3_IncrementalPID.Now_P_Val = Encoder_Speed.encoder3;
-		Mortor4_IncrementalPID.Now_P_Val = Encoder_Speed.encoder4;
-		Mortor1_IncrementalPID.Now_I_Val = Encoder_Speed.encoder1;
-		Mortor2_IncrementalPID.Now_I_Val = Encoder_Speed.encoder2;
-		Mortor3_IncrementalPID.Now_I_Val = Encoder_Speed.encoder3;
-		Mortor4_IncrementalPID.Now_I_Val = Encoder_Speed.encoder4;	
+		Mortor1_IncrementalPID.Now_Val = Encoder_Speed.encoder1;
+		Mortor2_IncrementalPID.Now_Val = Encoder_Speed.encoder2;
+		Mortor3_IncrementalPID.Now_Val = Encoder_Speed.encoder3;
+		Mortor4_IncrementalPID.Now_Val = Encoder_Speed.encoder4;	
 		//pid运算
 		Simple_Incremental_PID(&Mortor1_IncrementalPID);
 		Simple_Incremental_PID(&Mortor2_IncrementalPID);
@@ -97,15 +93,15 @@ void MovePID_Control(void)
 		Mortor4.Pwm_Write = Mortor4_IncrementalPID.Output_Val;
 	#elif (Speed_Debug_Flag == 2)//调参pid模式
 		//参数速度赋予结构体
-		Mortor1_IncrementalPID.EX_I_Val = Speed_Debug.Mortor1_IdealSpeed;
-		Mortor2_IncrementalPID.EX_I_Val = Speed_Debug.Mortor2_IdealSpeed;
-		Mortor3_IncrementalPID.EX_I_Val = -Speed_Debug.Mortor3_IdealSpeed;
-		Mortor4_IncrementalPID.EX_I_Val = -Speed_Debug.Mortor4_IdealSpeed;
+		Mortor1_IncrementalPID.EX_Val = Speed_Debug.Mortor1_IdealSpeed;
+		Mortor2_IncrementalPID.EX_Val = Speed_Debug.Mortor2_IdealSpeed;
+		Mortor3_IncrementalPID.EX_Val = -Speed_Debug.Mortor3_IdealSpeed;
+		Mortor4_IncrementalPID.EX_Val = -Speed_Debug.Mortor4_IdealSpeed;
 		//pid运算
-		Mortor1_IncrementalPID.Now_I_Val = Encoder_Speed.encoder1;
-		Mortor2_IncrementalPID.Now_I_Val = Encoder_Speed.encoder2;
-		Mortor3_IncrementalPID.Now_I_Val = Encoder_Speed.encoder3;
-		Mortor4_IncrementalPID.Now_I_Val = Encoder_Speed.encoder4;
+		Mortor1_IncrementalPID.Now_Val = Encoder_Speed.encoder1;
+		Mortor2_IncrementalPID.Now_Val = Encoder_Speed.encoder2;
+		Mortor3_IncrementalPID.Now_Val = Encoder_Speed.encoder3;
+		Mortor4_IncrementalPID.Now_Val = Encoder_Speed.encoder4;
 		//pid运算
 		Simple_Incremental_PID(&Mortor1_IncrementalPID);
 		Simple_Incremental_PID(&Mortor2_IncrementalPID);
@@ -138,58 +134,32 @@ void MovePID_Control(void)
 void PID_Init(void)
 {
 	//PID参数初始化
-	//位置式pid参数
-	//A轮
-	Mortor1_IncrementalPID.Kp_P = 15;
-	Mortor1_IncrementalPID.Ki_P = 6;
-	Mortor1_IncrementalPID.Kd_P = 6;
-	//B轮
-	Mortor2_IncrementalPID.Kp_P = 15;
-	Mortor2_IncrementalPID.Ki_P = 6;
-	Mortor2_IncrementalPID.Kd_P = 8;
-	//C轮
-	Mortor3_IncrementalPID.Kp_P = 15;
-	Mortor3_IncrementalPID.Ki_P = 6;
-	Mortor3_IncrementalPID.Kd_P = 8;
-	//D轮
-	Mortor4_IncrementalPID.Kp_P = 15;
-	Mortor4_IncrementalPID.Ki_P = 6;
-	Mortor4_IncrementalPID.Kd_P = 8;
 	
 	//增量式pid参数
-	Mortor1_IncrementalPID.Kp_I = 18;
-	Mortor1_IncrementalPID.Ki_I = 4;
-	Mortor1_IncrementalPID.Kd_I = 6;
+	//A轮
+	Mortor1_IncrementalPID.Kp = 18;
+	Mortor1_IncrementalPID.Ki = 4;
+	Mortor1_IncrementalPID.Kd = 6;
 	//B轮
-	Mortor2_IncrementalPID.Kp_I = 18;
-	Mortor2_IncrementalPID.Ki_I = 4;
-	Mortor2_IncrementalPID.Kd_I = 6;
+	Mortor2_IncrementalPID.Kp = 18;
+	Mortor2_IncrementalPID.Ki = 4;
+	Mortor2_IncrementalPID.Kd = 6;
 	//C轮
-	Mortor3_IncrementalPID.Kp_I = 18;
-	Mortor3_IncrementalPID.Ki_I = 4;
-	Mortor3_IncrementalPID.Kd_I = 6;
+	Mortor3_IncrementalPID.Kp = 18;
+	Mortor3_IncrementalPID.Ki = 4;
+	Mortor3_IncrementalPID.Kd = 6;
 	//D轮
-	Mortor4_IncrementalPID.Kp_I = 18;
-	Mortor4_IncrementalPID.Ki_I = 4;
-	Mortor4_IncrementalPID.Kd_I = 6;
+	Mortor4_IncrementalPID.Kp = 18;
+	Mortor4_IncrementalPID.Ki = 4;
+	Mortor4_IncrementalPID.Kd = 6;
 	
 	//初始化
-	Mortor1_IncrementalPID.EX_P_Val = Mortor2_IncrementalPID.EX_P_Val
-	= Mortor3_IncrementalPID.EX_P_Val = Mortor4_IncrementalPID.EX_P_Val = 0;
 
-	Mortor1_IncrementalPID.Now_P_Val = Mortor2_IncrementalPID.Now_P_Val
-	= Mortor3_IncrementalPID.Now_P_Val = Mortor4_IncrementalPID.Now_P_Val = 0;
+	Mortor1_IncrementalPID.Now_Val = Mortor2_IncrementalPID.Now_Val
+	= Mortor3_IncrementalPID.Now_Val = Mortor4_IncrementalPID.Now_Val = 0;
 
 	Mortor1_IncrementalPID.Output_Val = Mortor2_IncrementalPID.Output_Val
 	= Mortor3_IncrementalPID.Output_Val = Mortor4_IncrementalPID.Output_Val = 0;
-
-	Mortor1_IncrementalPID.Error_P_Now = Mortor2_IncrementalPID.Error_P_Now
-	= Mortor3_IncrementalPID.Error_P_Now = Mortor4_IncrementalPID.Error_P_Now = 0;
-	Mortor1_IncrementalPID.Error_P_Last = Mortor2_IncrementalPID.Error_P_Last
-	= Mortor3_IncrementalPID.Error_P_Last = Mortor4_IncrementalPID.Error_P_Last = 0;
-	
-	Mortor1_IncrementalPID.Error_P_Integral = Mortor2_IncrementalPID.Error_P_Integral
-	= Mortor3_IncrementalPID.Error_P_Integral = Mortor4_IncrementalPID.Error_P_Integral = 0;
 
 	Mortor1_IncrementalPID.Dead_zone = Mortor2_IncrementalPID.Dead_zone
 	= Mortor3_IncrementalPID.Dead_zone = Mortor4_IncrementalPID.Dead_zone = 2;
@@ -204,8 +174,8 @@ void PID_Init(void)
 #define E_LIMIT 50//偏差限幅
 /*
  * @name:void Simple_Incremental_PID(Incremental_PID_TypeDef *IncrPID);
- * @function: PID运行
- * @param:none
+ * @function: 增量式PID运算
+ * @param:IncrPID 电机pid参数
  * @return:none
  */
 void Simple_Incremental_PID(Incremental_PID_TypeDef *IncrPID)
@@ -246,28 +216,28 @@ void Simple_Incremental_PID(Incremental_PID_TypeDef *IncrPID)
 	*/
 /*增量式*/
 
-	IncrPID->Error_I_Now = IncrPID->EX_I_Val-IncrPID->Now_I_Val;//误差求取
-	if(IncrPID->Error_I_Now > -IncrPID->Dead_zone
-		&&IncrPID->Error_I_Now < IncrPID->Dead_zone)//死区控制
+	IncrPID->Error_Now = IncrPID->EX_Val-IncrPID->Now_Val;//误差求取
+	if(IncrPID->Error_Now > -IncrPID->Dead_zone
+		&&IncrPID->Error_Now < IncrPID->Dead_zone)//死区控制
 	{
-		IncrPID->Error_I_Now = 0;
+		IncrPID->Error_Now = 0;
 	}
-	p = IncrPID->Kp_I*(IncrPID->Error_I_Now - IncrPID->Error_I_Last);
-	i = IncrPID->Ki_I*IncrPID->Error_I_Now;
-	d = IncrPID->Kd_I*(IncrPID->Error_I_Before + IncrPID->Error_I_Now - 2*IncrPID->Error_I_Last);
-
-	IncrPID->Incr_Val = (int16_t)(p+i+d)/100;//速度增量获得
-
-	IncrPID->Output_Val += IncrPID->Incr_Val;//加上增量
-
-	if((IncrPID->EX_I_Val==0)&(IncrPID->Error_I_Now==0))//刹车超越响应
+	
+	if((IncrPID->EX_Val==0)&(IncrPID->Error_Now==0))//刹车超越响应
 	{
 		IncrPID->Output_Val = 0;
 		IncrPID->Incr_Val=0;//增量复位
 	}
+	else
+	{
+		p = IncrPID->Kp*(IncrPID->Error_Now - IncrPID->Error_Last);
+		i = IncrPID->Ki*IncrPID->Error_Now;
+		d = IncrPID->Kd*(IncrPID->Error_Before + IncrPID->Error_Now - 2*IncrPID->Error_Last);
+		IncrPID->Output_Val += (int16_t)(p+i+d)/100;//速度增量计算并添加
+	}
 	
-	IncrPID->Error_I_Before = IncrPID->Error_I_Last;//上次偏差写入上上次偏差
-	IncrPID->Error_I_Last = IncrPID->Error_I_Now;//当前偏差写入上次偏差
+	IncrPID->Error_Before = IncrPID->Error_Last;//上次偏差写入上上次偏差
+	IncrPID->Error_Last = IncrPID->Error_Now;//当前偏差写入上次偏差
 
 	//限幅
 	if(IncrPID->Output_Val >IncrPID->Output_Max)
@@ -281,7 +251,7 @@ void Simple_Incremental_PID(Incremental_PID_TypeDef *IncrPID)
 /*
  * @name:void bsp_SpeedSum(v[3]);
  * @function:速度融合，前后,左右,旋转
- * @parameter:矢量控制数组[3]
+ * @parameter:矢量控制数组i[3]
  * @return:none
  */
 void bsp_SpeedSum(int16_t *i)
@@ -377,7 +347,7 @@ void PWM_Write(void)
 
 /*
  * @name:void bsp_Driver(int16_t v, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
- * @function:电机驱动控制
+ * @function:电机驱动控制，配合驱动板真值表改变对应电平
  * @parameter:占空比v
  * @return:none
  */
