@@ -1,10 +1,10 @@
 /*
  * @Author: niutu
  * @Date: 2021-02-03 18:04:12
- * @LastEditTime: 2021-04-13 20:47:45
+ * @LastEditTime: 2023-03-27 22:03:36
  * @LastEditors: NiuTu
  * @Description:Œª÷√»∑∂®
- * @FilePath: \MDK-ARMd:\project\logistics_robot_v1\Task\Location.c
+ * @FilePath: \logistics_robot_end\Task\Location.c
  */
 #include "Location.h"
 #include "Bsp.h"
